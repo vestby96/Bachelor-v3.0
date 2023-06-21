@@ -1,0 +1,6 @@
+uvicorn
+fastapi
+jinja2
+httpx
+pytest
+mysql-connector-python
