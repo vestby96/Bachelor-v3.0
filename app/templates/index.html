@@ -4,12 +4,44 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="{{ url_for('static', path='/scripts/jquery-3.6.4.min.js') }}"></script>
     <link rel="stylesheet" href="{{ url_for('static', path='/styles/index.css') }}">
-    <title>Dev-Env-Framework</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='/images/logo/favicon.ico') }}">
+    <title>Auto Docs Visualizer</title>
 </head>
 <body>
-    <h1>Hello World</h1>
-    
+    <nav>
+        <button id="navLogo"><img src="{{ url_for('static', path='/images/logo/logo-icon.png') }}" alt="Logo"></button>
+        <button id="navSearch">Search</button>
+        <button id="navSettings">Settings</button>
+        <button id="navInformation">Information</button>
+    </nav>
+
+    <section id="leftMargin">
+        {% for file in input %}
+            <h2>{{ file }}</h2>
+        {% endfor %}
+    </section>
+
+    <section id="canvas">
+
+        <div id="blockLayer">
+
+        </div>
+
+        <div id="svgLayer">
+            <svg id="topLeft"></svg>
+            <svg id="topRight"></svg>
+            <svg id="bottomLeft"></svg>
+            <svg id="bottomRight"></svg>
+        </div>
+
+        <div id="stageLayer">
+
+        </div>
+
+    </section>
+
     <script src="{{ url_for('static', path='/scripts/index.js') }}"></script>
 </body>
 </html>
