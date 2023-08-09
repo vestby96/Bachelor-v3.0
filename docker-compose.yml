@@ -6,16 +6,5 @@ services:
       - 80:80
     volumes:
       - ./app:/app
-  
-  database:
-    image: mysql
-    container_name: database
-    ports:
-      - 3306:3306
-    environment:
-      - MYSQL_ROOT_PASSWORD=password-123
-    volumes:
-      - database:/var/lib/mysql
-
-volumes:
-  database:
+      - ./BP-files:/app/BP-files
+    restart: always
