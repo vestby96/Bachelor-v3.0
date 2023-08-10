@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% for file in fullList %}
+
+        <h1 data-json="{{ file | tojson | forceescape  }}">{{ file['file-name'] }}</h1>
+
+        {% if file['bpr:release']['bpr:contents']['process'] %}
+            {% set file_process = file['bpr:release']['bpr:contents']['process']['process'] %}
+
+            {% for page in file_process['subsheet'] %}
+
+                <h3>{{ page['name'] }}</h3>
+
+            {% endfor %}
+ 
+        {% endif %}
+
+        {% if file['bpr:release']['bpr:contents']['object'] %}
+            {% set file_object = file['bpr:release']['bpr:contents']['object']['process'] %}    
+
+            {% for page in file_object['subsheet'] %}
+
+                <h3>{{ page['name'] }}</h3>
+
+            {% endfor %}
+
+        {% endif %}
+        
+    {% endfor %}
+
+</body>
+</html>

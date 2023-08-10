@@ -4,42 +4,303 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap">
+
     <script src="{{ url_for('static', path='/scripts/jquery-3.6.4.min.js') }}"></script>
+    <script src="{{ url_for('static', path='/scripts/jquery-ui.js') }}"></script>
     <link rel="stylesheet" href="{{ url_for('static', path='/styles/index.css') }}">
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='/images/logo/favicon.ico') }}">
     <title>Auto Docs Visualizer</title>
 </head>
-<body>
-    <nav>
-        <button id="navLogo"><img src="{{ url_for('static', path='/images/logo/logo-icon.png') }}" alt="Logo"></button>
-        <button id="navSearch">Search</button>
-        <button id="navSettings">Settings</button>
-        <button id="navInformation">Information</button>
+<body onload="pageLoaded()">
+
+    <div id="pageLoader"><div class="lds-ring"><div></div><div></div><div></div><div></div></div></div>
+
+    <nav> <!-- navigation bar -->
+        <!-- logo -->
+        <button id="navLogo">
+            <img src="{{ url_for('static', path='/images/logo/logo-icon.png') }}" alt="Logo">
+        </button>
+
+        <!-- search -->
+        <button id="searchBtn" title="Toggle search input">
+            Search
+            <img src="{{ url_for('static', path='/images/icons/icons8-search.svg') }}" alt="icon">
+        </button>
+
+        <!-- settings -->
+        <button id="settingsBtn" title="Toggle settings">
+            Settings
+            <img src="{{ url_for('static', path='/images/icons/icons8-settings.svg') }}" alt="icon">
+        </button>
+
+        <!-- information -->
+        <button id="infoBtn" title="Toggle information">
+            Info
+            <img src="{{ url_for('static', path='/images/icons/icons8-information.svg') }}" alt="icon">
+        </button>
     </nav>
 
-    <section id="leftMargin">
-        {% for file in input %}
-            <h2>{{ file }}</h2>
+    <section id="settings"> <!-- settings -->
+        <table>
+            <tr>
+                <td>Zoom</td>
+                <td><input id="settingsScaleSlider" type="range" min="1" max="5"></td>
+                <td><button id="settingsScaleReset">Reset</button></td>
+            </tr>
+            <tr>
+                <td>Update</td>
+                <td>xml</td>
+                <td><button id="settingsUpdateXmlBtn">Update</button></td>
+            </tr>
+            <tr>
+                <td>Update</td>
+                <td>json</td>
+                <td><button id="settingsUpdateJsonBtn">Update</button></td>
+            </tr>
+        </table>
+    </section>
+
+    <div id="fileSearch">
+        <input type="text" placeholder="search..." title="Search for a file name" onkeyup="search()">
+    </div>
+
+    <section id="fileList"> <!-- file list -->
+        {% for file in fullList %}
+
+            <div class="fileListItem" name="{{ file['file-name'] }}" data-json="{{ file | tojson | forceescape  }}">
+
+                <div class="fileListItemTop">
+
+                    <button class="fileListItemTopBtnLeft" title="Display the process" page-id="" name="{{ file['file-name'] }}">
+
+                        <h2>{{ file['file-name'] }}</h2>
+
+                    </button>
+
+                    <button class="fileListItemTopBtnRight" title="List the pages">
+
+                        <img src="icons/icon_arrowup_orange.svg" alt="arrow icon">
+
+                    </button>
+
+                </div>
+
+                <div class="fileListItemBottom">
+
+                    <div>
+
+                        {% if file['bpr:release']['bpr:contents']['process'] %}
+
+                            {% set file_process = file['bpr:release']['bpr:contents']['process']['process'] %}
+
+                            <div class="fileListItemBottomProcessBtn">
+
+                                <h3>Process</h3>
+
+                                <button>
+
+                                    <img src="icons/icon_arrowup_white.svg" alt="arrow icon">
+
+                                </button>
+
+                            </div>
+
+                            <div class="fileListItemBottomProcessList" data-narrative="{{ file_process['@narrative'] }}">
+
+                                <div>
+
+                                    {% for page in file_process['subsheet'] %}
+
+                                        <button class="fileListItemBottomPage" title="Display page" page-id="{{ page['@subsheetid'] }}" file-id="{{ file['file-name'] }}" name="{{ page['name'] }}" data-json="{{ page | tojson | forceescape }}">
+                                            
+                                            {{ page['name'] }}
+
+                                        </button>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            </div>
+
+                        {% endif %}
+                        
+                        {% if file['bpr:release']['bpr:contents']['object'] %}
+                
+                            {% set file_object = file['bpr:release']['bpr:contents']['object']['process'] %}
+
+                            <div class="fileListItemBottomObjectBtn">
+
+                                <h3>Object</h3>
+
+                                <button>
+
+                                    <img src="icons/icon_arrowup_white.svg" alt="arrow icon">
+
+                                </button>
+
+                            </div>
+
+                            <div class="fileListItemBottomObjectList" data-narrative="{{ file_object['@narrative'] }}">
+
+                                <div>
+
+                                    {% for page in file_object['subsheet'] %}
+
+                                        <button class="fileListItemBottomPage" title="Display page" page-id="{{ page['@subsheetid'] }}" file-id="{{ file['file-name'] }}" name="{{ page['name'] }}" data-json="{{ page | tojson | forceescape }}">
+                                            
+                                            {{ page['name'] }}
+
+                                        </button>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            </div>
+
+                        {% endif %}
+                        
+                    </div>
+                </div>
+            </div>
         {% endfor %}
     </section>
 
-    <section id="canvas">
+    <button id="fileListBtn"> <!-- toggle file list -->
+        <img src="icons/icon_arrowup_black.svg" alt="arrow icon">
+    </button>
 
-        <div id="blockLayer">
+    <section id="path"> <!-- path section -->
 
+    </section>
+
+    <h2 id="pageLabel"> <!-- page label -->
+
+    </h2>
+
+    <section id="map"> <!-- map -->
+        <div id="draggableMap">
+            <svg xmlns="http://www.w3.org/2000/svg" style="overflow: visible;">
+                <defs><!-- A marker to be used as an arrowhead -->
+                    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 0 0 L 10 5 L 0 10 z" />
+                    </marker>
+                </defs>
+            </svg>
+            <div id="mapCenter"></div>
         </div>
+    </section>
 
-        <div id="svgLayer">
-            <svg id="topLeft"></svg>
-            <svg id="topRight"></svg>
-            <svg id="bottomLeft"></svg>
-            <svg id="bottomRight"></svg>
+    <section id="information"> <!-- information -->
+        <div class="stageInfo" id="decisionInfo">
+            <div class="stageInfoTop">
+                <button>Decision</button>
+                <img src="stages/decision.png" alt="Decision">
+            </div>
+            <div class="stageInfoBottom">
+                <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+                    Laborum blanditiis accusamus corrupti odio, vitae odit corporis ullam provident neque sunt, 
+                    adipisci eius numquam molestiae minus et. Sapiente laborum voluptatem fugit.
+                </p>
+            </div>
         </div>
-
-        <div id="stageLayer">
-
+        <div class="stageInfo" id="startInfo">
+            <div class="stageInfoTop">
+                <button>Start</button>
+                <img src="stages/start.png" alt="Start">
+            </div>
+            <div class="stageInfoBottom">
+                <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+                    Laborum blanditiis accusamus corrupti odio, vitae odit corporis ullam provident neque sunt, 
+                    adipisci eius numquam molestiae minus et. Sapiente laborum voluptatem fugit.
+                </p>
+            </div>
         </div>
-
+        <div class="stageInfo" id="endInfo">
+            <div class="stageInfoTop">
+                <button>Stage name</button>
+                <img src="stages/end.png" alt="End">
+            </div>
+            <div class="stageInfoBottom">
+                <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+                    Laborum blanditiis accusamus corrupti odio, vitae odit corporis ullam provident neque sunt, 
+                    adipisci eius numquam molestiae minus et. Sapiente laborum voluptatem fugit.
+                </p>
+            </div>
+        </div>
+        <div class="stageInfo" id="blockInfo">
+            <div class="stageInfoTop">
+                <button>Block</button>
+                <img src="stages/block.png" alt="Block">
+            </div>
+            <div class="stageInfoBottom">
+                <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+                    Laborum blanditiis accusamus corrupti odio, vitae odit corporis ullam provident neque sunt, 
+                    adipisci eius numquam molestiae minus et. Sapiente laborum voluptatem fugit.
+                </p>
+            </div>
+        </div>
+        <div class="stageInfo" id="collectionInfo">
+            <div class="stageInfoTop">
+                <button>Collection</button>
+                <img src="stages/collection.png" alt="Collection">
+            </div>
+            <div class="stageInfoBottom">
+                <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+                    Laborum blanditiis accusamus corrupti odio, vitae odit corporis ullam provident neque sunt, 
+                    adipisci eius numquam molestiae minus et. Sapiente laborum voluptatem fugit.
+                </p>
+            </div>
+        </div>
+        <div class="stageInfo" id="dataInfo">
+            <div class="stageInfoTop">
+                <button>Data</button>
+                <img src="stages/data.png" alt="Data"> 
+            </div>
+            <div class="stageInfoBottom">
+                <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+                    Laborum blanditiis accusamus corrupti odio, vitae odit corporis ullam provident neque sunt, 
+                    adipisci eius numquam molestiae minus et. Sapiente laborum voluptatem fugit.
+                </p>
+            </div>
+        </div>
+        <div class="stageInfo" id="anchorInfo">
+            <div class="stageInfoTop">
+                <button>Anchor</button>
+                <img src="stages/anchor.png" alt="Anchor">
+            </div>
+            <div class="stageInfoBottom">
+                <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+                    Laborum blanditiis accusamus corrupti odio, vitae odit corporis ullam provident neque sunt, 
+                    adipisci eius numquam molestiae minus et. Sapiente laborum voluptatem fugit.
+                </p>
+            </div>
+        </div>
+        <div class="stageInfo" id="choiceInfo">
+            <div class="stageInfoTop">
+                <button>Choice</button>
+                <img src="stages/choice.png" alt="Choice">
+            </div>
+            <div class="stageInfoBottom">
+                <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+                    Laborum blanditiis accusamus corrupti odio, vitae odit corporis ullam provident neque sunt, 
+                    adipisci eius numquam molestiae minus et. Sapiente laborum voluptatem fugit.
+                </p>
+            </div>
+        </div>
     </section>
 
     <script src="{{ url_for('static', path='/scripts/index.js') }}"></script>

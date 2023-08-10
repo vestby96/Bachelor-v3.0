@@ -42,6 +42,18 @@ async def read_one(name: str) -> str:
 
     return json_obj
 
-async def read_all() -> list[str]:
+async def read_all_short() -> list[str]:
 
     return os.listdir(dir_path)
+
+async def read_all_long() -> list[str]:
+    return_list = []
+
+    result_list = await read_all_short()
+
+    for name in result_list:
+        result = await read_one(name)
+        result['file-name'] = name
+        return_list.append(result)
+    
+    return return_list

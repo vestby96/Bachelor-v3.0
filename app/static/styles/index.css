@@ -1,12 +1,27 @@
+
 :root{
     --primary-color: #005;
     --secondary-color: #FDA;
+    --support-color-1: #B4AB9C;
+    --support-color-2: #76CABE;
+    --complimentary-color-1: #49A694;
+    --complimentary-color-2: #E65925;
+    --complimentary-color-3: #0293CE;
+    --complimentary-color-4: #C2B9AE;
+    /* this color is used as shadow effect */
+    --complimentary-color-5: #000000;
+    --map-background: #f6f0e3;
+    --map-grid: #d3d3d3;
+    --font-color-dark: black;
+    --font-color-light: white;
 }
 
 *{
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+    font-family: "Open Sans", sans-serif;
+    font-weight: 400;
 }
 
 html, body{
@@ -14,114 +29,667 @@ html, body{
     height: 100%;
 }
 
-nav{
-    background-color: var(--primary-color);
-    color: var(--secondary-color);
-
-    width: 100%;
-    height: 10%;
-
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 6;
-}
-
-nav button{
-    width: 10%;
-    height: 50%;
-
+button{
     cursor: pointer;
 }
 
-#navLogo img{
-    height: 100%;
-}
-
-#leftMargin{
-    background-color: var(--secondary-color);
-    color: var(--primary-color);
-
-    width: 35%;
-    height: 90%;
-
-    position: absolute;
-    top: 10%;
-    left: 0;
+/*------------------------------ Navigasjon bar ------------------------------*/
+nav{
+    position: relative;
+    width: 100%;
+    height: 10%;
+    background-color: var(--primary-color);
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
     z-index: 5;
-
-    transform: translateX(-100%);
+    box-shadow: 0 0 5px 0 black;
 }
 
-#canvas{
-    width: 100%;
-    height: 90%;
+#logo{
+    width: 100px;
+}
 
+nav button{
+    padding: 5px 10px;
+    position: relative;
+    background-color: transparent;
+    color: var(--font-color-light);
+    border: none;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s all;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+nav button:hover{
+    box-shadow: 0 0 5px 0 black;
+}
+
+nav button::before{
+    content: '';
+    width: 0;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: -1;
+    background: linear-gradient(to right, var(--complimentary-color-3), var(--support-color-2));
+    border-radius: 5px;
+    transition: 0.2s all;
+}
+
+nav button.show::before{
+    width: 100%;
+}
+
+nav button img{
+    width: 30px;
+}
+
+/*------------------------------ Settings Section ------------------------------*/
+#settings{
+    width: 300px;
+    padding: 10px;
+    border-radius: 0 0 10px 10px;
+    background-color: var(--primary-color);
+    position: absolute;
+    left: 50%;
+    top: 10%;
+    transform: translate(-50%, -110%);
+    transition: 0.2s all ease-in;
+    z-index: 3;
+    box-shadow: 0 0 5px 0 black;
+}
+
+#settings.show{
+    transform: translate(-50%) !important;
+    z-index: 4 !important;
+}
+
+/*------------------------------ Search Input ------------------------------*/
+#fileSearch{
+    width: min(50%, 400px);
+    height: 60px;
+    padding: 5px;
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    background-color: var(--primary-color);
+    transform: translateY(-100%);
+    transition: 0.2s all;
+    z-index: 3;
+
+    display: flex;
+    align-items: center;
+}
+
+#fileSearch.show{
+    transform: translateY(0) !important;
+    z-index: 4 !important;
+    box-shadow: 0 0 5px 0 black !important;
+}
+
+#fileSearch input{
+    width: 100%;
+    padding: 10px;
+    color: var(--font-color-dark) !important;
+}
+
+/*------------------------------ Process List Section ------------------------------*/
+#fileList{
+    width: 50%;
+    height: 90%;
+    background-color: var(--secondary-color);
     position: absolute;
     top: 10%;
     left: 0;
-    z-index: 4;
+    z-index: 2;
+    transition: 0.2s all;
+    box-shadow: 0 0 5px 0 black;
+    overflow-y: auto;
 }
 
-#blockLayer{
-    width: 100%;
-    height: 100%;
-
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 0;
+#fileList *{
+    color: var(--font-color-dark);
 }
 
-#svgLayer{
-    width: 100%;
-    height: 100%;
+#fileList.hide{
+    transform: translate(-100%) !important;
+    box-shadow: 0 0 0 0 !important;
+}
 
+/* File List Item */
+.fileListItem{
+    border-bottom: 3px solid var(--primary-color);
+    transition: 0.2s all;
+}
+
+.fileListItem.show{
+    background-color: var(--complimentary-color-1) !important;
+}
+
+.fileListItem.show *{
+    color: var(--font-color-light) !important;
+    font-weight: bolder !important;
+}
+
+.fileListItem .fileListItemTop{
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.fileListItemTop .fileListItemTopBtnLeft{
+    padding: 5px 10px;
+    border: none;
+    border-radius: 10px;
+    background-color: transparent;
+    text-align: start;
+}
+
+.fileListItemTop .fileListItemTopBtnLeft:hover{
+    box-shadow: 0 0 5px 0 black;
+}
+
+.fileListItemTop .fileListItemTopBtnLeft h2{
+    text-transform: capitalize;
+}
+
+.fileListItemTop .fileListItemTopBtnRight{
+    min-width: 30px;
+    min-height: 30px;
+    position: relative;
+    border: none;
+    border-radius: 100%;
+    background-color: transparent;
+    overflow: hidden;
+    transition: 0.2s all;
+}
+
+.fileListItemTop .fileListItemTopBtnRight:hover{
+    box-shadow: 0 0 5px 0 black;
+}
+
+.fileListItemTop .fileListItemTopBtnRight img{
+    width: 50px;
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-180deg);
+    transition: 0.2s all;
+}
+
+.fileListItemTop .fileListItemTopBtnRight img.open{
+    transform: translate(-50%, -50%) rotate(0) !important;
+}
+
+.fileListItem .fileListItemBottom{
+    padding: 0 10px 0 10px;
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: 0.2s all;
+}
+
+.fileListItem .fileListItemBottom.open{
+    grid-template-rows: 1fr;
+}
+
+.fileListItem .fileListItemBottom div{
+    overflow: hidden;
+}
+
+.fileListItemBottomProcessBtn, .fileListItemBottomObjectBtn{
+    padding: 5px;
+    border-top: 2px solid var(--font-color-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.fileListItemBottomProcessBtn h3, .fileListItemBottomObjectBtn h3{
+
+}
+
+.fileListItemBottomProcessBtn button, .fileListItemBottomObjectBtn button{
+    min-width: 30px;
+    min-height: 30px;
+    position: relative;
+    border: none;
+    border-radius: 100%;
+    background-color: transparent;
+    overflow: hidden;
+    transition: 0.2s all;
+}
+
+.fileListItemBottomProcessBtn button:hover, .fileListItemBottomObjectBtn button:hover{
+    box-shadow: 0 0 5px 0 black;
+}
+
+.fileListItemBottomProcessBtn button img, .fileListItemBottomObjectBtn button img{
+    width: 50px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-180deg);
+    transition: 0.2s all;
+}
+
+.fileListItemBottomProcessBtn button img.open, .fileListItemBottomObjectBtn button img.open{
+    transform: translate(-50%, -50%) rotate(0) !important;
+}
+
+.fileListItemBottomProcessList, .fileListItemBottomObjectList{
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: 0.2s all;
+}
+
+.fileListItemBottomProcessList.open, .fileListItemBottomObjectList.open{
+    grid-template-rows: 1fr;
+}
+
+.fileListItemBottomProcessList div, .fileListItemBottomObjectList div{
+    overflow: hidden;
+}
+
+.fileListItemBottomProcessList button, .fileListItemBottomObjectList button{
+    padding: 10px;
+    width: 100%;
+    border: none;
+    border-top: 1px solid var(--font-color-dark);
+    background-color: transparent;
+    display: block;
+    text-align: start;
+}
+
+.fileListItemBottomProcessList button:hover, .fileListItemBottomObjectList button:hover{
+    box-shadow: 0 0 5px 2px white;
+}
+
+#fileListBtn{
+    width: 15px;
+    height: 30px;
+    position: absolute;
+    left: 50%;
+    bottom: 20px;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    background-color: var(--complimentary-color-4);
+    z-index: 1;
+    overflow: hidden;
+    transition: 0.2s all;
+    box-shadow: 0 0 5px 0 black;
+}
+
+#fileListBtn:hover{
+    box-shadow: 0 0 8px 0 black;
+}
+
+#fileListBtn.hide{
+    left: 0 !important;
+}
+
+#fileListBtn img{
+    width: 280%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(-90deg);
+    transition: 0.2s all;
+}
+
+#fileListBtn.hide img{
+    transform: translate(-50%, -50%) rotate(90deg);
+}
+
+/*------------------------------ Path Section ------------------------------*/
+#path{
+    width: 100%;
+    height: 60px;
+    background-color: var(--support-color-1);
+    box-shadow: 0 0 5px 0 black;
+    z-index: 1;
+    overflow: auto;
+    display: flex;
+}
+
+#path .pathButton{
+    padding: 0 10px;
+    position: relative;
+    font-size: 16px;
+    white-space: nowrap;
+    border: none;
+    background-color: var(--map-grid);
+    display: block;
+    box-shadow: 0 0 5px 0 black;
+    transition: 0.2s all;
+}
+
+#path .pathButton:hover{
+    z-index: 1;
+    background-color: var(--map-background);
+}
+
+#pageLabel{
+    margin: 10px;
+    position: absolute;
+    top: calc(10% + 60px);
     z-index: 1;
 }
 
-#svgLayer svg{
-    width: 50%;
-    height: 50%;
+/*------------------------------ Map Section ------------------------------*/
+#map{
+    width: 100%;
+    height: calc(90% - 60px);
+    position: relative;
+    background-color: var(--map-background);
+    z-index: 0;
+    overflow: hidden;
 }
 
-#svgLayer #topLeft{
+#map #draggableMap{
     position: absolute;
-    top: 0;
+    min-width: 200%;
+    min-height: 200%;
+    cursor: move;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#draggableMap svg{
+    position: absolute;
     left: 0;
-}
-
-#svgLayer #topRight{
-    position: absolute;
     top: 0;
-    right: 0;
-}
-
-#svgLayer #bottomLeft{
-    position: absolute;
-    bottom: 0;
-    left: 0;
-}
-
-#svgLayer #bottomRight{
-    position: absolute;
-    bottom: 0;
-    right: 0;
-}
-
-#stageLayer{
     width: 100%;
     height: 100%;
+}
 
-    position: absolute;
-    top: 0;
+#draggableMap #mapCenter{
+    position: relative;
     left: 0;
-    z-index: 2;
+    top: 0;
+    width: 0;
+    height: 0;
+}
+
+#mapCenter .stage{
+    border: 1px solid black;
+    position: absolute;
+
+    background-color: white;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+
+    font-size: 12px;
+    z-index: 1;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    transform: translate(-50%, -50%);
+
+    transition: z-index 0.2s 1s;
+}
+
+#mapCenter .stage[stagetype='Block']{
+    padding: 0 0 0 2px !important;
+    color: black !important;
+    display: block !important;
+    border-radius: 0 !important;
+    background-color: lightblue !important;
+    transform: translate(0) !important;
+    z-index: -1 !important;
+    opacity: 0.5;
+}
+
+#mapCenter [stagetype='BlockLabel']{
+    padding: 1px;
+    position: absolute;
+    background-color: white;
+    border: 1px solid black;
+    font-size: 12px;
+}
+
+#mapCenter .stage[stagetype='Start'],
+#mapCenter .stage[stagetype='End'] {
+    padding: 15px;
+    border-radius: 10px;
+}
+
+#mapCenter .stage[stagetype='Decision']{
+    text-align: center;
+    border: none;
+    background-color: transparent !important;
+    background-image: url(../stages/decision2.svg);
+}
+
+#mapCenter .stage[stagetype='Choice']{
+    padding: 5px;
+}
+
+#mapCenter .stage[stagetype='Data']{
+    transform: translate(-50%, -50%) skew(-45deg) !important;
+}
+
+#mapCenter .stage[stagetype='Data'] p{
+    transform: skew(45deg) !important;
+}
+
+#mapCenter .stage[stagetype='ProcessInfo']{
+    display: block !important;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#mapCenter .stage[stagetype='ProcessInfo'] p{
+    padding: 1px;
+}
+
+#mapCenter .stage[stagetype='SubSheetInfo']{
+    display: block !important;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#mapCenter .stage[stagetype='SubSheetInfo'] p{
+    padding: 1px;
+}
+
+/* Hover element */
+#mapCenter .stage:hover{
+    z-index: 2 !important;
+}
+
+#mapCenter .stage:hover .hover{
+    grid-template-rows: 1fr;
+}
+
+#mapCenter .hover{
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+
+    color: black;
+    border-radius: 5px;
+    background-color: var(--complimentary-color-4);
+
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.2s ease 1s;
+}
+
+#mapCenter .hover div{
+    width: fit-content;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+#mapCenter .hover div p{
+    padding: 0 5px 0 5px;
+}
+
+#mapCenter .stage[stagetype='Data'] .hover{
+    transform: skew(45deg) !important;
+}
+
+#mapCenter .stage[stagetype='Data'] .hover div p{
+    transform: skew(0) !important;
+}
+
+/*------------------------------ Information Section ------------------------------*/
+#information{
+    width: 100%;
+    height: 90%;
+    padding: 20px;
+    background-color: var(--primary-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    top: 10%;
+    left: 0;
+    z-index: 3;
+    overflow: auto;
+    transform: translate(0, -100%);
+    transition: 0.2s all ease-in;
+}
+
+#information.show{
+    transform: translate(0, 0) !important;
+    z-index: 4 !important;
+}
+
+.stageInfo{
+    width: 500px;
+    height: fit-content;
+    padding: 15px;
+    margin: 10px;
+    border-radius: 10px;
+    background-color: var(--secondary-color);
+}
+
+.stageInfo *{
+    color: var(--font-color-light);
+}
+
+.stageInfoTop{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.stageInfoTop button{
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: transparent;
+    transition: 0.2s all;
+}
+
+.stageInfoTop button:hover{
+    box-shadow: 0 0 5px 0 black;
+}
+
+.stageInfoTop img{
+    width: 100px;
+}
+
+.stageInfoBottom{
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: 0.2s all;
+}
+
+.stageInfoBottom.open{
+    grid-template-rows: 1fr;
+}
+
+.stageInfoBottom p{
+    overflow: hidden;
+}
+
+/*------------------------------ Loader ------------------------------*/
+.lds-ring {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+
+.lds-ring div {
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    border: 8px solid black;
+    border-radius: 50%;
+    animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    border-color: black transparent transparent transparent;
+}
+
+.lds-ring div:nth-child(1) {
+    animation-delay: -0.45s;
+}
+
+.lds-ring div:nth-child(2) {
+    animation-delay: -0.3s;
+}
+
+.lds-ring div:nth-child(3) {
+    animation-delay: -0.15s;
+}
+
+@keyframes lds-ring {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+}
+
+#pageLoader{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: var(--primary-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99;
+}
+
+#mapLoader{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99;
+}
+
+/*------------------------------ Error page ------------------------------*/
+#error{
+    padding: 20px;
+    border-radius: 15px;
+    border: 2px solid var(--secondary-color);
+    background-color: var(--primary-color);
+    position: absolute;
+    left: 50%;
+    top: 35%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
